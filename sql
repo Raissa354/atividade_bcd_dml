@@ -1,53 +1,62 @@
-1.
-SELECT *FROM Produto
-WHERE data_cadastro BETWEEN '2024-03-01' AND '2024-03-31';
-
-2.SELECT nome_produto, marca, estoque, data_cadastro
+Respostas da atividade — SQL DML
+1. Todos os atributos dos produtos cujo nome começa com a letra “D”
+SELECT *
 FROM Produto
-WHERE data_cadastro >= '2024-01-01'
-AND data_cadastro < '2024-04-01';
+WHERE nome_produto LIKE 'D%';
 
-3.
-SELECT *FROM Cliente
-WHERE data_cadastro BETWEEN '2023-01-01' AND '2023-01-31';
 
-4.
-SELECT nome_cliente, email, cidade, estado, data_cadastro
+2. Nome do produto, marca e estoque onde a marca termina com a letra “E”
+SELECT nome_produto, marca, estoque
+FROM Produto
+WHERE marca LIKE '%E';
+
+
+3. Nome do produto, marca e preço unitário onde o nome contém “Gamer”
+SELECT nome_produto, marca, preco_unitario
+FROM Produto
+WHERE nome_produto LIKE '%Gamer%';
+
+
+4. Todos os atributos dos clientes cujo nome contém “Barbosa”
+SELECT *
 FROM Cliente
-WHERE data_cadastro BETWEEN '2023-06-01' AND '2023-06-15';
+WHERE nome_cliente LIKE '%Barbosa%';
 
-5.
-SELECT *FROM Venda
-WHERE data_venda BETWEEN '2025-05-01' AND '2025-05-31';
 
-6.
-SELECT
-    Cliente.nome_cliente,
-    Venda.data_venda,
-    Venda.preco_unitario_venda,
-    Venda.forma_pagamento
+5. Nome do cliente, data da venda, preço unitário e forma de pagamento onde o nome começa com “C”
+SELECT Cliente.nome_cliente,
+       Venda.data_venda,
+       Venda.preco_unitario_venda,
+       Venda.forma_pagamento
+FROM Cliente
+INNER JOIN Venda
+ON Cliente.id_cliente = Venda.id_cliente
+WHERE Cliente.nome_cliente LIKE 'C%';
+
+
+6. Nome do produto, preço, ID da venda e forma de pagamento onde o produto contém “Polegada” e o pagamento é PIX ou Boleto
+SELECT Produto.nome_produto,
+       Venda.preco_unitario_venda,
+       Venda.id_venda,
+       Venda.forma_pagamento
+FROM Produto
+INNER JOIN Venda
+ON Produto.id_produto = Venda.id_produto
+WHERE Produto.nome_produto LIKE '%Polegada%'
+AND Venda.forma_pagamento IN ('PIX', 'Boleto');
+
+
+7. Nome do produto, nome do cliente, desconto e forma de pagamento, ordenados pelo status da venda em ordem crescente
+SELECT Produto.nome_produto,
+       Cliente.nome_cliente,
+       Venda.desconto_percentual,
+       Venda.forma_pagamento
 FROM Venda
-INNER JOIN Cliente
-ON Venda.id_cliente = Cliente.id_cliente
-WHERE Venda.data_venda >= '2025-12-24'
-AND Venda.data_venda < '2026-01-16'
-ORDER BY Venda.preco_unitario_venda DESC;
-
-7.
-SELECT  Cliente.nome_cliente,
-     Cliente.email,
-    Produto.nome_produto,
-    Produto.marca,
-    Produto.categoria,
-    Venda.forma_pagamento,
-    Venda.data_venda,
-    Venda.status_venda
-FROM Venda
-INNER JOIN Cliente
-ON Venda.id_cliente = Cliente.id_cliente
 INNER JOIN Produto
 ON Venda.id_produto = Produto.id_produto
-WHERE Venda.data_venda >= '2025-12-01'
-AND Venda.data_venda < '2026-01-01'
-AND Venda.status_venda IN ('Cancelada', 'Concluída')
-ORDER BY Venda.preco_unitario_venda DESC;
+INNER JOIN Cliente
+ON Venda.id_cliente = Cliente.id_cliente
+WHERE Produto.nome_produto LIKE '%Placa%'
+   OR Produto.nome_produto LIKE '%Notebook%'
+   OR Cliente.nome_cliente LIKE '%Ana%'
+ORDER BY Venda.status_venda ASC;
